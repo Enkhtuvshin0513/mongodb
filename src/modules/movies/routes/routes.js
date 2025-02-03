@@ -1,6 +1,5 @@
 import express from "express";
 import { client } from "../../../mongo.js";
-import { parse } from "dotenv";
 
 const route = express.Router();
 
