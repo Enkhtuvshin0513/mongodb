@@ -76,4 +76,34 @@ route.get("/or", async (req, res) => {
   });
 });
 
+route.get("/and", async (req, res) => {
+  let { genre, page = 1, limit = 10, year } = req.query;
+
+  page = parseInt(page);
+  limit = parseInt(limit);
+  year = parseInt(year);
+
+  if (!genre || !year) {
+    res.json({ success: false, message: "genre or year required" });
+  }
+
+  const query = {
+    $and: [{ genre: { $eq: genre } }, { year: { $eq: year } }]
+  };
+
+  const movies = await movies_collection
+    .find(query)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .toArray();
+
+  const movieCount = await movies_collection.countDocuments(query);
+
+  res.json({
+    success: true,
+    pagination: { total: movieCount, page, limit, totalReturn: limit },
+    data: { movies }
+  });
+});
+
 export { route };
