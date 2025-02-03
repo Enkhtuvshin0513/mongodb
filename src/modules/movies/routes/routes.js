@@ -8,13 +8,15 @@ const database = client.db("sample_mflix");
 const movies_collection = database.collection("movies");
 
 route.get("/imdb", async (req, res) => {
-  const { imdbId } = req.query;
+  let { imdbId } = req.query;
+
+  imdbId = parseInt(imdbId);
 
   if (!imdbId) {
     res.json({ success: false, message: "imdbId required" });
   }
 
-  const movie = await movies_collection.findOne({ imdbId: { $eq: imdbId } });
+  const movie = await movies_collection.findOne({ "imdb.id": { $eq: imdbId } });
 
   res.json({ success: true, data: { movie } });
 });
